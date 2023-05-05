@@ -9,11 +9,13 @@ import { TimelineOppositeContent } from "@mui/lab";
 import moment from "moment/moment";
 import tasks from "../Json/Task";
 import { useState } from "react";
+import { Stack } from "@mui/material";
+import styled from "@emotion/styled";
 
 export default function OutlinedTimeline() {
   const [task, setTask] = useState(tasks);
-  const diff = useRef(0);
-
+  // const diff = useRef(0);
+  const timer = useRef();
   const setStatusColor = (status) => {
     let statusColor = "";
     if (status === "pending") {
@@ -27,61 +29,82 @@ export default function OutlinedTimeline() {
   };
 
   const visitedTimeLine = useCallback(() => {
+    console.log("visitedTimeLine called");
     const currentDate = moment();
-    return tasks.map((item, i, arr) => {
-      if (currentDate.isBefore(moment(item.date))) {
-        item.status = "pending";
-      } else if (
-        currentDate.isBetween(moment(item.date), moment(arr[i + 1]?.date))
-      ) {
-        item.status = "active";
-        diff.current = moment(currentDate).diff(item.date);
-      } else {
-        item.status = "done";
-      }
-      return item;
-    });
+    let timeDiff = 0;
+    setTask(
+      tasks.map((item, i, arr) => {
+        if (
+          arr[i + 1]?.date &&
+          currentDate.isBetween(moment(arr[i]?.date), moment(arr[i + 1]?.date))
+        ) {
+          timeDiff = Math.abs(
+            moment(currentDate).diff(moment(arr[i + 1].date))
+          );
+          item.status = "active";
+        } else if (currentDate.isBefore(moment(item.date))) {
+          item.status = "pending";
+        } else {
+          item.status = "done";
+        }
+        return item;
+      })
+    );
+
+    clearTimeout(timer.current);
+    if (timeDiff) {
+      timer.current = setTimeout(() => {
+        visitedTimeLine();
+      }, timeDiff);
+    }
   }, []);
 
-  // useEffect(() => {
-  //   console.log("line 48", diff);
-  //   setTask(visitedTimeLine());
-  // }, [visitedTimeLine]);
-
   useEffect(() => {
-    console.log("lien 53", diff);
-    const timer = setTimeout(() => {
-      setTask(visitedTimeLine());
-    }, diff.current);
-    return () => {
-      clearTimeout(timer);
-    };
+    visitedTimeLine();
   }, [visitedTimeLine]);
 
   const displayDate = (date) => {
-    return moment(date).format("DD/MM/YYYY hh:mm A");
+    return moment(date).format("DD/MM/YYYY hh:mm:ss A");
   };
 
+  // const Item = styled()(({ theme }) => ({
+  //   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  //   ...theme.typography.body2,
+  //   padding: theme.spacing(1),
+  //   textAlign: "center",
+  //   color: theme.palette.text.secondary,
+  //   flexGrow: 1,
+  // }));
   return (
     <>
-      <Timeline position="alternate">
-        {task.map((item) => {
-          return (
-            <TimelineItem key={item.date + item.activity}>
-              <TimelineOppositeContent>
-                {displayDate(item.date)}
-              </TimelineOppositeContent>
-              <TimelineSeparator>
-                <TimelineDot variant="outlined" />
-                <TimelineConnector
-                  sx={{ backgroundColor: setStatusColor(item.status) }}
-                />
-              </TimelineSeparator>
-              <TimelineContent>{item.activity}</TimelineContent>
-            </TimelineItem>
-          );
-        })}
-      </Timeline>
+      <Stack
+        spacing={{ xs: 1, sm: 2 }}
+        direction="row"
+        useFlexGap
+        flexWrap="wrap"
+      >
+        <Timeline position="alternate">
+          {task.map((item) => {
+            return (
+              <TimelineItem key={item.date + item.activity}>
+                <TimelineOppositeContent>
+                  {displayDate(item.date)}
+                </TimelineOppositeContent>
+                <TimelineSeparator>
+                  <TimelineDot
+                    variant="outlined"
+                    sx={{ backgroundColor: setStatusColor(item.status) }}
+                  />
+                  <TimelineConnector
+                    sx={{ backgroundColor: setStatusColor(item.status) }}
+                  />
+                </TimelineSeparator>
+                <TimelineContent>{item.activity}</TimelineContent>
+              </TimelineItem>
+            );
+          })}
+        </Timeline>
+      </Stack>
     </>
   );
 }
