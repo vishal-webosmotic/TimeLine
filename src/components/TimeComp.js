@@ -34,7 +34,7 @@ export default function OutlinedTimeline() {
     const currentDate = moment();
     let timeDiff = 0;
     setTask(
-      tasks.map((item, i, arr) => {
+      task.map((item, i, arr) => {
         if (
           arr[i + 1]?.date &&
           currentDate.isBetween(moment(arr[i]?.date), moment(arr[i + 1]?.date))
@@ -58,11 +58,11 @@ export default function OutlinedTimeline() {
         visitedTimeLine();
       }, timeDiff);
     }
-  }, []);
+  }, [task]);
 
   useEffect(() => {
     visitedTimeLine();
-  }, [visitedTimeLine]);
+  }, [visitedTimeLine, task]);
 
   const displayDate = (date) => {
     return moment(date).format("DD/MM/YYYY hh:mm:ss A");
@@ -72,7 +72,7 @@ export default function OutlinedTimeline() {
     <>
       <Grid container spacing={2}>
         <Grid container item xs={6} direction="column">
-          <DatePickerComp task={task} setTask={task} />
+          <DatePickerComp task={task} setTask={setTask} />
         </Grid>
         <Grid container item xs={6} direction="column">
           <Timeline position="alternate">
