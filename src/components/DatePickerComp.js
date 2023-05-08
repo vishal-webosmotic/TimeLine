@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
-import { Button, Grid, TextField } from "@mui/material";
+import { Button, Grid, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 
 const DatePickerComp = ({ task, setTask }) => {
@@ -12,17 +12,29 @@ const DatePickerComp = ({ task, setTask }) => {
     date: "",
     activity: "",
     status: "",
+    error: "",
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const newDate = moment(formData.date);
+    const { date, activity } = formData;
+
+    if (!date || !activity) {
+      setFormData({
+        ...formData,
+        error: "Add the activity",
+      });
+      return;
+    }
 
     if (task.some((value) => moment(value.date).isSame(newDate))) {
-      console.log("lie");
+      setFormData({
+        ...formData,
+        error: "Date is already exists",
+      });
     } else {
-      const { date, activity } = formData;
       const newItem = {
         date,
         activity,
@@ -61,21 +73,32 @@ const DatePickerComp = ({ task, setTask }) => {
                     date: moment(e).utc().format(),
                   });
                 }}
+                error={formData.error}
               />
             </DemoContainer>
           </LocalizationProvider>
-
           <TextField
             label="Activity"
             name="activity"
+            // error={formData.error}
             value={formData.activity}
             onChange={(e) =>
               setFormData({ ...formData, activity: e.target.value })
             }
+            fullWidth
+            sx={{ marginTop: 5 }}
           />
-          <Button variant="contained" type="submit">
-            Add Item
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{ marginTop: 5 }}
+            fullWidth
+          >
+            Add Date
           </Button>
+          <Typography variant="h6" component="h2" sx={{ mt: 2, color: "red" }}>
+            {formData.error}
+          </Typography>
         </form>
       </Grid>
     </>
