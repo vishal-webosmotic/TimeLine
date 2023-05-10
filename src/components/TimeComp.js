@@ -14,7 +14,6 @@ import Box from "@mui/material/Box";
 import DatePickerComp from "./DatePickerComp";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-
 import {
   CssBaseline,
   IconButton,
@@ -23,8 +22,11 @@ import {
   createTheme,
 } from "@mui/material";
 
+import { useTranslation } from "react-i18next";
+
 export default function OutlinedTimeline() {
   const [task, setTask] = useState(tasks);
+  const { t, i18n } = useTranslation();
 
   const [darkMode, setDarkMode] = useState(true);
 
@@ -84,6 +86,19 @@ export default function OutlinedTimeline() {
     return () => clearTimeout(timer);
   }, [createTimeline]);
 
+  const languages = [
+    { name: "Hindi", code: "hin" },
+    { name: "Guj", code: "guj" },
+    { name: "En", code: "en" },
+  ];
+  const [language, setLanguage] = useState("en");
+
+  const handleChangeLocale = (e) => {
+    const lang = e.target.value;
+    setLanguage(lang);
+    i18n.changeLanguage(lang);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -115,12 +130,19 @@ export default function OutlinedTimeline() {
                       sx={{ backgroundColor: setStatusColor(item.status) }}
                     />
                   </TimelineSeparator>
-                  <TimelineContent>{item.activity}</TimelineContent>
+                  <TimelineContent>{t(item.activity)}</TimelineContent>
                 </TimelineItem>
               );
             })}
           </Timeline>
         </Stack>
+        <select onChange={handleChangeLocale} value={language}>
+          {languages.map(({ name, code }) => (
+            <option key={code} value={code}>
+              {name}
+            </option>
+          ))}
+        </select>
       </Box>
       <IconButton onClick={() => setDarkMode(!darkMode)}>
         {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
