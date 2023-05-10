@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
-import { Button, Grid, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 
 const DatePickerComp = ({ task, setTask }) => {
@@ -54,11 +54,13 @@ const DatePickerComp = ({ task, setTask }) => {
 
   return (
     <>
-      <Grid
-        container
-        spacing={2}
+      <Box
         sx={{
           ml: 2,
+          p: 2,
+          border: "1px solid black",
+          borderRadius: "0.5rem",
+          height: "50vh",
         }}
       >
         <form onSubmit={handleSubmit}>
@@ -100,7 +102,7 @@ const DatePickerComp = ({ task, setTask }) => {
             {formData.error}
           </Typography>
         </form>
-      </Grid>
+      </Box>
     </>
   );
 };
