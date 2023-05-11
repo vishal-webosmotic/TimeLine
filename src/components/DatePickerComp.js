@@ -6,8 +6,11 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const DatePickerComp = ({ task, setTask }) => {
+  const { t } = useTranslation();
+
   const [formData, setFormData] = useState({
     date: "",
     activity: "",
@@ -96,7 +99,7 @@ const DatePickerComp = ({ task, setTask }) => {
             sx={{ marginTop: 5 }}
             fullWidth
           >
-            Add Date
+            {t("Add Button")}
           </Button>
           <Typography variant="h6" component="h2" sx={{ mt: 2, color: "red" }}>
             {formData.error}

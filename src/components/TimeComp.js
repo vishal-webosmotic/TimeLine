@@ -17,16 +17,18 @@ import Brightness7Icon from "@mui/icons-material/Brightness7";
 import {
   CssBaseline,
   IconButton,
+  Link,
   Stack,
   ThemeProvider,
+  Typography,
   createTheme,
 } from "@mui/material";
 
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 export default function OutlinedTimeline() {
   const [task, setTask] = useState(tasks);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [darkMode, setDarkMode] = useState(true);
 
@@ -86,19 +88,6 @@ export default function OutlinedTimeline() {
     return () => clearTimeout(timer);
   }, [createTimeline]);
 
-  const languages = [
-    { name: "Hindi", code: "hin" },
-    { name: "Guj", code: "guj" },
-    { name: "En", code: "en" },
-  ];
-  const [language, setLanguage] = useState("en");
-
-  const handleChangeLocale = (e) => {
-    const lang = e.target.value;
-    setLanguage(lang);
-    i18n.changeLanguage(lang);
-  };
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -136,13 +125,24 @@ export default function OutlinedTimeline() {
             })}
           </Timeline>
         </Stack>
-        <select onChange={handleChangeLocale} value={language}>
-          {languages.map(({ name, code }) => (
-            <option key={code} value={code}>
-              {name}
-            </option>
-          ))}
-        </select>
+        <Trans i18nKey="messages">
+          {/* This is{" "}
+          <a href="#" color="inherit">
+            link
+          </a> */}
+        </Trans>
+        <Trans
+          i18nKey="myKey" // optional -> fallbacks to defaults if not provided
+          defaults=" <link>hello</link> <italic>beautiful</italic> <bold>{{what}}</bold>"
+          values={{ what: "world" }}
+          components={{ italic: <i />, bold: <strong />, link: <link /> }}
+        />
+        {/* <Typography variant="h4" component="h2" align="center">
+          This is{" "}
+          <Link href="#" color="inherit">
+            link
+          </Link>
+        </Typography> */}
       </Box>
       <IconButton onClick={() => setDarkMode(!darkMode)}>
         {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
