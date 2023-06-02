@@ -17,10 +17,8 @@ import Brightness7Icon from "@mui/icons-material/Brightness7";
 import {
   CssBaseline,
   IconButton,
-  Link,
   Stack,
   ThemeProvider,
-  Typography,
   createTheme,
 } from "@mui/material";
 
